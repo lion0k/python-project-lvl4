@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "python-project-lvl4"
+version = "0.1.0"
+description = "Project Task Manager on www.hexlet.io"
+authors = ["li0n0k <li0n0m0nk@gmail.com>"]
+packages = [
+ { include = 'task_manager' },
+]
+
+classifiers = [
+  "Topic :: Education",
+  "Programming Language :: Python",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Django = "^3.2"
+gunicorn = "^20.1.0"
+python-dotenv = "^0.17.0"
+
+[tool.poetry.dev-dependencies]
+wemake-python-styleguide = "^0.15.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
