@@ -27,12 +27,7 @@ if os.path.exists(dotenv_path):
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('DEBUG', False))
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '.herokuapp.com',
-    '[::1]',
-    'localhost',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(';')
 
 # Application definition
 
@@ -42,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+
+    'task_manager.settings',
 ]
 
 MIDDLEWARE = [
