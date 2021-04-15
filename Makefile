@@ -1,14 +1,14 @@
 migrate:
 	poetry run python manage.py migrate
 
-setup: migrate
+setup:
 	echo Create a super user
 	poetry run python manage.py createsuperuser
 
 shell:
 	poetry run python manage.py shell
 
-start: migrate
+start:
 	poetry run python manage.py runserver 0.0.0.0:8000
 
 requirements: poetry.lock
@@ -19,5 +19,11 @@ test:
 
 lint:
 	poetry run flake8 task_manager
+
+i18n:
+	poetry run django-admin makemessages -l ru
+	poetry run django-admin makemessages -l en
+	poetry run django-admin.py compilemessages -l ru
+	poetry run django-admin.py compilemessages -l en
 
 .PHONY: install setup shell lint test start
