@@ -20,9 +20,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = os.path.join(BASE_DIR, '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
+load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('DEBUG', False))
@@ -40,7 +38,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'bootstrap4',
-
     'task_manager',
 ]
 
@@ -75,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
@@ -105,7 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
