@@ -17,7 +17,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
@@ -26,8 +25,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('DEBUG', False))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(';')
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -72,8 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -83,9 +78,6 @@ DATABASES = {
 CONN_MAX_AGE = 500
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -102,9 +94,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'Europe/Moscow'
@@ -115,27 +104,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale/'),
-)
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale/'), )
 
-LANGUAGES = (
-    ('ru', 'Russian'),
-    ('en', 'English'),
-)
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-# The absolute path to the directory where collectstatic will collect static files for deployment.
+LANGUAGES = (('ru', 'Russian'), ('en', 'English'))
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
