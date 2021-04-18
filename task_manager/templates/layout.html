@@ -1,17 +1,15 @@
 {% load bootstrap4 i18n %}
-{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
-<html lang={{ LANGUAGE_CODE }}>
+<html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %} {% translate 'name_project' %} {% endblock title %}</title>
+    <title>{% block title %}{% translate 'NameProject' %}{% endblock title %}</title>
     {% bootstrap_css %}
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <div class="wrapper flex-grow-1">
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
-          <a class="navbar-brand" href="/">Менеджер задач</a>
+          <a class="navbar-brand" href="/">{% translate 'NameProject' %}</a>
           <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarToggleExternalContent">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -33,11 +31,9 @@
         </nav>
 
         <div class="container wrapper flex-grow-1">
-            <div class="card">
-              <h1 class="cover-heading">{{ hello }}</h1>
-            </div>
+        {% block content %}
+        {% endblock %}
         </div>
-    </div>
 
     <footer>
       <div class="container my-5 pt-4 border-top">

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 13:29+0300\n"
+"POT-Creation-Date: 2021-04-18 12:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: task_manager/templates/base.html:8
-msgid "name_project"
-msgstr "Task manager"
+#: task_manager/templates/layout.html:7 task_manager/templates/layout.html:12
+msgid "NameProject"
+msgstr "Task Manager"
+
+#: task_manager/templates/users/index.html:3
+#: task_manager/templates/users/index.html:7 task_manager/users/models.py:8
+msgid "Users"
+msgstr "Users"
+
+#: task_manager/templates/users/index.html:11
+msgid "UserID"
+msgstr "ID"
+
+#: task_manager/templates/users/index.html:12
+msgid "UserName"
+msgstr "Name"
+
+#: task_manager/templates/users/index.html:13
+msgid "UserFullName"
+msgstr "Full name"
+
+#: task_manager/templates/users/index.html:14
+msgid "UserDateReg"
+msgstr "Date registration"
+
+#: task_manager/templates/users/index.html:15
+msgid "UserActions"
+msgstr "Actions"
+
+#: task_manager/templates/users/index.html:29
+msgid "UserNotFound"
+msgstr "Not users yet"
+
+#: task_manager/templates/users/index.html:38
+msgid "PaginatonFirst"
+msgstr "&laquo;First&raquo;"
+
+#: task_manager/templates/users/index.html:39
+msgid "PaginatonPrevious"
+msgstr "prev."
+
+#: task_manager/templates/users/index.html:43
+msgid "PaginatonPage"
+msgstr "page"
+
+#: task_manager/templates/users/index.html:43
+msgid "PaginatonPageIS"
+msgstr "is"
+
+#: task_manager/templates/users/index.html:46
+msgid "PaginatonNext"
+msgstr "next"
+
+#: task_manager/templates/users/index.html:48
+msgid "PaginatonLast"
+msgstr "&laquo;Last&raquo;"
+
+#: task_manager/users/models.py:7
+msgid "User"
+msgstr "User"
 
 #: task_manager/views.py:7
 msgid "Hello"

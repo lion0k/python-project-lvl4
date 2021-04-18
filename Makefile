@@ -20,9 +20,11 @@ test:
 lint:
 	poetry run flake8 task_manager
 
-i18n:
+i18n_make:
 	poetry run django-admin makemessages -l ru
 	poetry run django-admin makemessages -l en
+
+i18n_compile:
 	poetry run django-admin.py compilemessages -l ru
 	poetry run django-admin.py compilemessages -l en
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-15 13:29+0300\n"
+"POT-Creation-Date: 2021-04-18 12:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,66 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: task_manager/templates/base.html:8
-msgid "name_project"
+#: task_manager/templates/layout.html:7 task_manager/templates/layout.html:12
+msgid "NameProject"
 msgstr "Менеджер задач"
+
+#: task_manager/templates/users/index.html:3
+#: task_manager/templates/users/index.html:7 task_manager/users/models.py:8
+msgid "Users"
+msgstr "Пользователи"
+
+#: task_manager/templates/users/index.html:11
+msgid "UserID"
+msgstr "ID"
+
+#: task_manager/templates/users/index.html:12
+msgid "UserName"
+msgstr "Имя пользователя"
+
+#: task_manager/templates/users/index.html:13
+msgid "UserFullName"
+msgstr "Полное имя"
+
+#: task_manager/templates/users/index.html:14
+msgid "UserDateReg"
+msgstr "Дата регистрации"
+
+#: task_manager/templates/users/index.html:15
+msgid "UserActions"
+msgstr "Действия"
+
+#: task_manager/templates/users/index.html:29
+msgid "UserNotFound"
+msgstr "Пользователи не найдены"
+
+#: task_manager/templates/users/index.html:38
+msgid "PaginatonFirst"
+msgstr "&laquo;Первая&raquo;"
+
+#: task_manager/templates/users/index.html:39
+msgid "PaginatonPrevious"
+msgstr "сюда"
+
+#: task_manager/templates/users/index.html:43
+msgid "PaginatonPage"
+msgstr "страница"
+
+#: task_manager/templates/users/index.html:43
+msgid "PaginatonPageIS"
+msgstr "из"
+
+#: task_manager/templates/users/index.html:46
+msgid "PaginatonNext"
+msgstr "туда"
+
+#: task_manager/templates/users/index.html:48
+msgid "PaginatonLast"
+msgstr "&laquo;Последняя&raquo;"
+
+#: task_manager/users/models.py:7
+msgid "User"
+msgstr "Пользователь"
 
 #: task_manager/views.py:7
 msgid "Hello"
