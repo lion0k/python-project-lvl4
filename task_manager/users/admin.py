@@ -1,12 +1,23 @@
+"""User admins."""
 from django.contrib import admin
-
-from .models import CustomUser
+from django.contrib.auth import get_user_model
 
 
 class CustomUsersAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'first_name', 'last_name', 'email', 'date_joined')
+    """User model in admins."""
+
+    list_display = (
+        'id',
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        'date_joined',
+        'is_superuser',
+    )
     list_display_links = ('id', 'username')
     search_fields = ('username', 'first_name', 'last_name', 'email')
+    list_filter = ('first_name', 'last_name')
 
 
-admin.site.register(CustomUser, CustomUsersAdmin)
+admin.site.register(get_user_model(), CustomUsersAdmin)

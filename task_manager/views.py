@@ -1,8 +1,16 @@
+"""Task manager views."""
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.utils.translation import gettext_lazy as _
 
 
-def index(request):
-    return render(request, 'layout.html', context={
-        'hello': _('Hello'),
-    })
+def index(request) -> HttpResponse:
+    """
+    Test.
+
+    Args:
+        request: request
+
+    Returns:
+        HttpResponse:
+    """
+    return render(request, 'index.html')
