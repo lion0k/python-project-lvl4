@@ -1,3 +1,9 @@
+install:
+	poetry install
+
+make_migrate:
+	poetry run python manage.py makemigrations
+
 migrate:
 	poetry run python manage.py migrate
 
@@ -12,6 +18,11 @@ requirements: poetry.lock
 
 test:
 	poetry run python manage.py test
+
+test-coverage:
+	poetry run coverage run --source='task_manager' manage.py test
+	poetry run coverage xml
+	poetry run coverage report
 
 lint:
 	poetry run flake8 task_manager --exclude=migrations,task_manager/settings.py
