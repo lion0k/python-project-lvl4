@@ -5,9 +5,6 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import Paginator
-from django.http import HttpResponse
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -21,34 +18,19 @@ class UserListView(ListView):
 
     model = get_user_model()
     paginate_by = 10
+    queryset = model.objects.filter(is_superuser=False)
     context_object_name = 'users_list'
     template_name = 'users/index.html'
 
-    def listing(self, request) -> HttpResponse:
-        """
-        Get all users.
-
-        Args:
-            request:
-
-        Returns:
-            HttpResponse:
-        """
-        users_list = get_user_model().objects.all()
-        paginator = Paginator(users_list, per_page=10)
-
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        return render(request, self.template_name, {'page_obj': page_obj})
-
 
 class UserCreateView(SuccessMessageMixin, CreateView):
-    """User create form."""
+    """User create."""
 
+    model = get_user_model()
     form_class = CustomUserCreationForm
     template_name = 'users/create.html'
     success_message = _('SuccessCreateUser')
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('login')
 
 
 class UserUpdateView(
@@ -56,12 +38,12 @@ class UserUpdateView(
     SuccessMessageMixin,
     UpdateView,
 ):
-    """User update form."""
+    """User update."""
 
     model = get_user_model()
     form_class = CustomUserCreationForm
     template_name = 'users/update.html'
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('login')
     success_message = _('SuccessUpdateUser')
 
 
@@ -70,11 +52,11 @@ class UserDeleteView(
     SuccessMessageMixin,
     DeleteView,
 ):
-    """User delete form."""
+    """User delete."""
 
     model = get_user_model()
     template_name = 'users/delete.html'
-    success_url = reverse_lazy('users')
+    success_url = reverse_lazy('home')
     success_message = _('SuccessDeleteUser')
 
 

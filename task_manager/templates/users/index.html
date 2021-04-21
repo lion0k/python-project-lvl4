@@ -22,18 +22,16 @@
       </thead>
       <tbody>
         {% for user in users_list %}
-            {% if not user.is_superuser %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td><a href="{% url 'update_user' user.id %}">{{ user.username }}</a></td>
-                    <td>{{ user.get_full_name }}</td>
-                    <td>{{ user.date_joined|date:'d.m.Y H:i' }}</td>
-                    <td>
-                        <a href="{% url 'update_user' user.id %}"><button class="btn btn-outline-info btn-sm mt-1">{% translate 'UserChange' %}</button></a>
-                        <a href="{% url 'delete_user' user.id %}"><button class="btn btn-outline-danger btn-sm mt-1">{% translate 'UserDelete' %}</button></a>
-                    </td>
-                </tr>
-            {% endif %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td><a href="{% url 'update_user' user.id %}">{{ user.username }}</a></td>
+                <td>{{ user.get_full_name }}</td>
+                <td>{{ user.date_joined|date:'d.m.Y H:i' }}</td>
+                <td>
+                    <a href="{% url 'update_user' user.id %}"><button class="btn btn-outline-info btn-sm mt-1">{% translate 'UserChange' %}</button></a>
+                    <a href="{% url 'delete_user' user.id %}"><button class="btn btn-outline-danger btn-sm mt-1">{% translate 'UserDelete' %}</button></a>
+                </td>
+            </tr>
         {% empty %}
             <tr>
                 <td colspan="5">{% translate 'UserNotFound' %}</td>
