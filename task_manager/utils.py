@@ -16,19 +16,11 @@ def read_file(path_to_file):
     Args:
         path_to_file: path to file
 
-    Raises:
-        ValueError: then file is empty or not supported
-        FileNotFoundError: file not found
-
     Returns:
         any: data from file
     """
     with open(path_to_file) as file_descriptor:
-        file_data = file_descriptor.read()
-        if not file_data:
-            raise ValueError("'{file}' is empty!".format(file=path_to_file))
-
-        return file_data
+        return file_descriptor.read()
 
 
 def load_jsonfile_from_fixture(filename: str, add_paths: list = None) -> dict:

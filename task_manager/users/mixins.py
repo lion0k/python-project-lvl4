@@ -22,8 +22,6 @@ class CheckUserRightsTestMixin(UserPassesTestMixin):
         Returns:
             bool:
         """
-        if self.request.user.is_superuser:
-            return True
         return self.get_object() == self.request.user
 
     def handle_no_permission(self) -> Union[  # noqa: WPS320

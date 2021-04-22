@@ -1,8 +1,8 @@
 """task_manager URL Configuration."""
 from django.contrib import admin
 from django.urls import include, path
-from task_manager.users.views import UserLoginView, UserLogoutView
 from task_manager import views
+from task_manager.users.views import UserLoginView, UserLogoutView
 
 urlpatterns = [
     path('', views.index, name='home'),

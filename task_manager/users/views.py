@@ -18,7 +18,6 @@ class UserListView(ListView):
 
     model = get_user_model()
     paginate_by = 10
-    queryset = model.objects.filter(is_superuser=False)
     context_object_name = 'users_list'
     template_name = 'users/index.html'
 

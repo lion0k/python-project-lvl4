@@ -1,11 +1,10 @@
 """Users tests."""
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
-from django.test.client import Client
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+from task_manager.users.forms import CustomUserCreationForm
 from task_manager.utils import load_jsonfile_from_fixture
-from django.utils.translation import gettext
 
 
 class TestModelCase(TestCase):
@@ -14,25 +13,82 @@ class TestModelCase(TestCase):
     def setUpTestData(cls):
         cls.credentials = {'username': 'testing_user'}
         cls.user_model = get_user_model()
-        cls.test_user = cls.user_model.objects.create(**cls.credentials)
+
+    def setUp(self) -> None:
+        self.user_model.objects.create(**self.credentials)
 
     def test_create(self):
-        self.assertTrue(isinstance(self.test_user, self.user_model))
-        self.assertEqual(self.credentials['username'], self.test_user.username)
+        user = self.user_model.objects.get(**self.credentials)
+        self.assertTrue(isinstance(user, self.user_model))
+        self.assertEqual(self.credentials['username'], user.username)
 
     def test_update(self):
+        user = self.user_model.objects.get(**self.credentials)
         update_name = 'another_name'
-        self.test_user.username = update_name
-        self.test_user.save()
-        self.assertEqual(update_name, self.test_user.username)
+        user.username = update_name
+        user.save()
+        self.assertEqual(update_name, user.username)
 
     def test_delete(self):
-        self.test_user.delete()
+        user = self.user_model.objects.get(**self.credentials)
+        user.delete()
         with self.assertRaises(ObjectDoesNotExist):
-            self.user_model.objects.get(pk=self.test_user.id)
+            self.user_model.objects.get(pk=user.id)
 
 
-class TestControllerCase(TestCase):
+class TestListViewCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        number_of_users = 15
+        cls.user_model = get_user_model()
+        for postfix in range(number_of_users):
+            user = {'username': 'user{postfix}'.format(postfix=postfix)}
+            cls.user_model.objects.create(**user)
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/users/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('users'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/index.html')
+
+    def test_pagination_is_ten(self):
+        response = self.client.get(reverse('users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('is_paginated' in response.context)
+        self.assertTrue(response.context['is_paginated'])
+        self.assertTrue(len(response.context['users_list']) == 10)
+
+    def test_lists_all_users(self):
+        response = self.client.get(reverse('users')+'?page=2')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('is_paginated' in response.context)
+        self.assertTrue(response.context['is_paginated'])
+        self.assertTrue(len(response.context['users_list']) == 5)
+
+    def test_i18_ru(self):
+        headers = {'HTTP_ACCEPT_LANGUAGE': 'ru'}
+        name_project = 'Менеджер задач'
+        response = self.client.get(reverse('users'), **headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(name_project in response.content.decode('utf-8'))
+
+    def test_i18_en(self):
+        headers = {'HTTP_ACCEPT_LANGUAGE': 'en'}
+        name_project = 'Task Manager'
+        response = self.client.get(reverse('users'), **headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(name_project in response.content.decode('utf-8'))
+
+
+class TestCreateViewCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -41,27 +97,13 @@ class TestControllerCase(TestCase):
             add_paths=['users'],
         )
         cls.user_model = get_user_model()
-        cls.client = Client()
-
-    def test_list_view(self):
-        for item in self.users_data.values():
-            if 'password1' not in item:
-                self.user_model.objects.create(**item)
-        count_users_in_db = len(self.user_model.objects.all())
-        response = self.client.get(reverse('users'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('users_list' in response.context)
-        self.assertTemplateUsed(response, 'users/index.html')
-        count_users_in_response = len(response.context['users_list'])
-        self.assertEqual(count_users_in_db, count_users_in_response)
-        self.assertTrue(gettext('Users') in response.content.decode('utf-8'))
 
     def test_create_view(self):
         response = self.client.get(reverse('create_user'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/create.html')
 
-        user = self.users_data['user_for_insert']
+        user = self.users_data['user_insert']
         response = self.client.post(
             path=reverse('create_user'),
             data=user,
@@ -72,20 +114,116 @@ class TestControllerCase(TestCase):
             self.user_model.objects.get(username=user['username']).username,
         )
 
-    def test_update_view(self):
-        # with out fixtures
-        user_before = {"username": "valid_username", "password": "aqdvd23rd"}
-        user_before_created = self.user_model.objects.create(**user_before)
-        self.assertTrue(self.user_model.objects.filter(**user_before).exists())
 
-        # self.client.login(username=user_before['username'], password=user_before['password'])
+class TestLoginLogoutViewCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users_data = load_jsonfile_from_fixture(
+            filename='test_users_data.json',
+            add_paths=['users'],
+        )
+        cls.user_model = get_user_model()
+        cls.user = cls.users_data['user']
+        cls.user_model.objects.create_user(**cls.user)
+
+    def test_login(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+        self.assertTrue(self.user_model.objects.filter(
+            username=self.user['username']).exists(),
+                        )
         response = self.client.post(
             path=reverse('login'),
-            data=user_before,
+            data=self.user,
+            follow=True,
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('home'))
+        self.assertTrue(response.context['user'].is_authenticated)
+
+    def test_logout(self):
+        response = self.client.get(reverse('logout'), follow=True)
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse(response.context['user'].is_authenticated)
+
+
+class TestUpdateDeleteCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users_data = load_jsonfile_from_fixture(
+            filename='test_users_data.json',
+            add_paths=['users'],
+        )
+        cls.user_model = get_user_model()
+        cls.credentials = cls.users_data['user']
+        cls.user = cls.user_model.objects.create_user(**cls.credentials)
+
+    def setUp(self) -> None:
+        self.client.login(**self.credentials)
+
+    def test_update_view(self):
         response = self.client.post(
-            path=reverse('update_user', args=[user_before_created.pk]),
-            data={"username": "updated", 'password1': '12345678', 'password2': '12345678'},
+            path=reverse('update_user', args=[self.user.pk]),
+            data=self.users_data['user_update'],
         )
-        # self.assertRedirects(response, reverse('home'))
+        self.assertRedirects(response, reverse('login'))
+        self.assertEqual(
+            self.users_data['user_update']['username'],
+            self.user_model.objects.get(pk=self.user.pk).username,
+        )
+
+    def test_try_update_another_user(self):
+        user2 = self.user_model.objects.create(
+            **self.users_data['user2'],
+        )
+        response = self.client.post(
+            path=reverse('update_user', args=[user2.pk]),
+            data=self.users_data['user_update'],
+        )
+        self.assertRedirects(response, reverse('users'))
+        self.assertNotEqual(
+            self.users_data['user_update']['username'],
+            self.user_model.objects.get(pk=user2.pk).username,
+        )
+
+    def test_delete_view(self):
+        response = self.client.post(
+            path=reverse('delete_user', args=[self.user.pk]),
+        )
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse(self.user_model.objects.filter(
+            username=self.credentials['username'],
+        ).exists())
+
+    def test_try_delete_another_user(self):
+        user2 = self.user_model.objects.create(
+            **self.users_data['user2'],
+        )
+        response = self.client.post(
+            path=reverse('delete_user', args=[user2.pk]),
+        )
+        self.assertRedirects(response, reverse('users'))
+        self.assertTrue(self.user_model.objects.filter(
+            username=user2.username,
+        ).exists())
+
+
+class TestCustomUserCreationForm(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users_data = load_jsonfile_from_fixture(
+                    filename='test_users_data.json',
+                    add_paths=['users'],
+                )
+
+    def test_valid_form(self):
+        data = self.users_data['valid_form']
+        self.assertTrue(CustomUserCreationForm(data=data).is_valid())
+
+    def test_invalid_form(self):
+        data = self.users_data['invalid_form']
+        self.assertFalse(CustomUserCreationForm(data=data).is_valid())
