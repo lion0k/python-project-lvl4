@@ -21,6 +21,9 @@ jobs:
           pip install poetry
           make install
       - name: Run linter
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           make lint
       - uses: paambaati/codeclimate-action@v2.7.5
