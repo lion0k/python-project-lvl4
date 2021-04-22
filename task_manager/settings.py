@@ -9,10 +9,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'some_test_key')
 DEBUG = bool(os.getenv('DEBUG', False))
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(';')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com', '[::1]']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
