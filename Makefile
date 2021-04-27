@@ -11,7 +11,7 @@ shell:
 	poetry run python manage.py shell
 
 start_server:
-	poetry run python manage.py runserver 0.0.0.0:8000
+	poetry run python manage.py runserver 127.0.0.1:8000
 
 requirements: poetry.lock
 	poetry export --format requirements.txt --output requirements.txt

@@ -1,11 +1,20 @@
 """Statuses views."""
+from typing import Union
+
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.deletion import ProtectedError
+from django.http.response import (
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+from task_manager.mixins import CustomLoginRequiredMixin
 from task_manager.statuses.forms import StatusForm
-from task_manager.statuses.mixins import CustomLoginRequiredMixin
 from task_manager.statuses.models import Status
 
 
@@ -59,3 +68,24 @@ class StatusDeleteView(
     template_name = 'statuses/delete.html'
     success_url = reverse_lazy('statuses')
     success_message = _('SuccessDeleteStatus')
+
+    def post(self, request, *args, **kwargs) -> Union[
+        HttpResponsePermanentRedirect,
+        HttpResponseRedirect,
+    ]:
+        """
+        Override 'post' in DeletionMixin.
+
+        Args:
+            request: request
+
+        Returns:
+            Union:
+        """
+        try:
+            response = self.delete(request, *args, **kwargs)
+            messages.success(self.request, self.success_message)
+            return response
+        except ProtectedError:
+            messages.error(self.request, _('CannotDeleteStatus'))
+            return redirect('statuses')

@@ -1,24 +1,24 @@
 {% extends 'layout.html' %}
 {% load bootstrap4 i18n %}
 
-{% block title %}{% translate 'UpdateUsers' %}{% endblock %}
+{% block title %}{% translate 'UpdateTasks' %}{% endblock %}
 
 {% block breadcrumb %}
   <ol class="breadcrumb">
     <li class="breadcrumb-item" aria-current="page"><a href="/">{% translate 'BreadcrumbHome' %}</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'users' %}">{% translate 'Users' %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">{% translate 'UpdateUsers' %}</li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'tasks' %}">{% translate 'Tasks' %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">{% translate 'UpdateTasks' %}</li>
   </ol>
 {% endblock breadcrumb %}
 
 {% block content %}
     <div class="container mt-5">
-        <h2>{% translate 'UpdateUsers' %}</h2>
+        <h2>{% translate 'UpdateTasks' %}</h2>
         <form class="form" method="post">
             {% csrf_token %}
             {% bootstrap_form form %}
             {% buttons %}
-                <button type="submit" class="btn btn-outline-info">{% translate 'UpdateUser' %}</button>
+                <button type="submit" class="btn btn-outline-info">{% translate 'UpdateTask' %}</button>
             {% endbuttons %}
         </form>
     </div>

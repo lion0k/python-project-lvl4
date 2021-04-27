@@ -1,4 +1,4 @@
-"""Status mixins."""
+"""Mixins."""
 from typing import Any
 
 from django.contrib import messages

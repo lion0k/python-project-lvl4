@@ -25,6 +25,9 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'statuses' %}">{% translate 'Statuses' %}</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tasks' %}">{% translate 'Tasks' %}</a>
+                  </li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav">
@@ -43,17 +46,15 @@
             </ul>
           </div>
         </nav>
-
+        <nav aria-label="breadcrumb">
+          {% block breadcrumb %}
+          {% endblock breadcrumb %}
+        </nav>
         <div class="container wrapper flex-grow-1 col-md-8 mt-5">
-            <nav aria-label="breadcrumb">
-              {% block breadcrumb %}
-              {% endblock breadcrumb %}
-            </nav>
             {% bootstrap_messages %}
             {% block content %}
             {% endblock %}
         </div>
-
     <footer>
       <div class="container my-5 pt-4 border-top">
         <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>

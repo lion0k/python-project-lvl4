@@ -1,0 +1,9 @@
+"""Tasks application."""
+from django.apps import AppConfig
+
+
+class TasksConfig(AppConfig):
+    """Config task."""
+
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'task_manager.tasks'

@@ -4,6 +4,7 @@ from pathlib import Path
 import dj_database_url
 from django.urls import reverse_lazy
 from dotenv import load_dotenv
+from django.utils.log import DEFAULT_LOGGING
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     'task_manager',
     'task_manager.users.apps.UsersConfig',
     'task_manager.statuses.apps.StatusesConfig',
+    'task_manager.tasks.apps.TasksConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,3 +115,38 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 LOGOUT_REDIRECT_URL = reverse_lazy('home')
+
+FIXTURES_DIR = 'fixtures'
+
+LOGGING = DEFAULT_LOGGING
+LOGGING.update(
+    {
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+            'django.server': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'django.server',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console', 'mail_admins'],
+                'level': 'INFO',
+            },
+            'django.db.backends': {
+                'level': 'DEBUG',
+                'propagate': False,
+                'handlers': ['console'],
+            },
+        },
+    }
+)
