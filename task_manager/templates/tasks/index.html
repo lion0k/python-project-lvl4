@@ -27,7 +27,7 @@
         {% for task in tasks_list %}
             <tr>
                 <td>{{ task.id }}</td>
-                <td><a href="{% url 'update_task' task.id %}">{{ task.name }}</a></td>
+                <td><a href="{% url 'detail_task' task.id %}">{{ task.name }}</a></td>
                 <td>{{ task.status }}</td>
                 <td>{{ task.creator }}</td>
                 <td>{{ task.executor }}</td>

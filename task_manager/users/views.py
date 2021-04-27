@@ -84,8 +84,8 @@ class UserDeleteView(
             messages.success(self.request, self.success_message)
             return response
         except ProtectedError:
-            messages.error(self.request, _('CannotDeleteStatus'))
-            return redirect('statuses')
+            messages.error(self.request, _('CannotDeleteUser'))
+            return redirect('users')
 
 
 class UserLoginView(SuccessMessageMixin, LoginView):

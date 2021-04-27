@@ -6,8 +6,8 @@
 {% block breadcrumb %}
   <ol class="breadcrumb">
     <li class="breadcrumb-item" aria-current="page"><a href="/">{% translate 'BreadcrumbHome' %}</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'tasks' %}">{% translate 'Tasks' %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">{% translate 'CreateTasks' %}</li>
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'tasks' %}">{% translate 'Tasks' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'create_task' %}">{% translate 'CreateTasks' %}</a></li>
   </ol>
 {% endblock breadcrumb %}
 

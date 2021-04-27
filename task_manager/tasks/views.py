@@ -1,9 +1,15 @@
 """Tasks views."""
-from typing import Any
+from typing import Any, Union
 
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http.response import (
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from task_manager.tasks.forms import TasksForm
@@ -23,6 +29,15 @@ class TaskListView(CustomLoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
     context_object_name = 'tasks_list'
     template_name = 'tasks/index.html'
+
+
+class TaskDetailView(CustomLoginRequiredMixin, DetailView):
+    """Task detail view."""
+
+    model = Tasks
+    context_object_name = 'task'
+    login_url = reverse_lazy('login')
+    template_name = 'tasks/detail.html'
 
 
 class TaskCreateView(
@@ -62,6 +77,7 @@ class TaskUpdateView(
     """Task update."""
 
     model = Tasks
+    context_object_name = 'task'
     form_class = TasksForm
     queryset = model.objects.prefetch_related('status', 'executor', 'creator')
     login_url = reverse_lazy('login')
@@ -78,6 +94,7 @@ class TaskDeleteView(
     """Task delete."""
 
     model = Tasks
+    context_object_name = 'task'
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks')
     success_message = _('SuccessDeleteTask')
@@ -91,3 +108,20 @@ class TaskDeleteView(
             bool:
         """
         return self.get_object().creator == self.request.user
+
+    def post(self, request, *args, **kwargs) -> Union[
+        HttpResponsePermanentRedirect,
+        HttpResponseRedirect,
+    ]:
+        """
+        Override 'post' in DeletionMixin.
+
+        Args:
+            request: request
+
+        Returns:
+            Union:
+        """
+        response = self.delete(request, *args, **kwargs)
+        messages.success(self.request, self.success_message)
+        return response

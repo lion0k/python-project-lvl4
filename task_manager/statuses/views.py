@@ -51,6 +51,7 @@ class StatusUpdateView(
     """Status update."""
 
     model = Status
+    context_object_name = 'status'
     form_class = StatusForm
     template_name = 'statuses/update.html'
     success_url = reverse_lazy('statuses')
@@ -65,6 +66,7 @@ class StatusDeleteView(
     """Status delete."""
 
     model = Status
+    context_object_name = 'status'
     template_name = 'statuses/delete.html'
     success_url = reverse_lazy('statuses')
     success_message = _('SuccessDeleteStatus')
