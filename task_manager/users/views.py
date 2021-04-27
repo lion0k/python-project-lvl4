@@ -46,6 +46,7 @@ class UserUpdateView(
     """User update."""
 
     model = get_user_model()
+    context_object_name = 'user'
     form_class = CustomUserCreationForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('login')
@@ -61,6 +62,7 @@ class UserDeleteView(
     """User delete."""
 
     model = get_user_model()
+    context_object_name = 'user'
     template_name = 'users/delete.html'
     success_url = reverse_lazy('home')
     success_message = _('SuccessDeleteUser')
