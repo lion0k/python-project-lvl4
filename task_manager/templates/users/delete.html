@@ -14,7 +14,7 @@
 {% block content %}
     <div class="container mt-5">
         <h2>{% translate 'DeleteUsers' %}</h2>
-        <div class="mt-5">{% translate 'AreYouSureToDeleteUser' %} <strong>"{{ object }}"</strong>?</div>
+        <div class="mt-5">{% translate 'AreYouSureToDeleteUser' %} <strong>"{{ user.username }}"</strong>?</div>
         <div style="display: inline-block">
             <form class="form" method="post">
                 {% csrf_token %}

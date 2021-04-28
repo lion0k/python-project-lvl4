@@ -17,6 +17,7 @@ class TestModelCase(TestCase):
     fixtures = [
         'tasks/db_users.json',
         'tasks/db_statuses.json',
+        'tasks/db_labels.json',
         'tasks/db_tasks.json',
     ]
 
@@ -223,6 +224,7 @@ class TestUpdateDeleteCase(TestCase):
     fixtures = [
         'tasks/db_users.json',
         'tasks/db_statuses.json',
+        'tasks/db_labels.json',
         'tasks/db_tasks.json',
     ]
 

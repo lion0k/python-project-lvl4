@@ -1,6 +1,7 @@
 """Labels tests."""
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.deletion import ProtectedError
 from django.http.response import HttpResponseBase
 from django.test import TestCase
 from django.urls import reverse
@@ -10,6 +11,13 @@ from task_manager.labels.models import Label
 
 class TestModelCase(TestCase):
     """Test model case."""
+
+    fixtures = [
+        'tasks/db_users.json',
+        'tasks/db_statuses.json',
+        'tasks/db_labels.json',
+        'tasks/db_tasks.json',
+    ]
 
     @classmethod
     def setUpTestData(cls):
@@ -41,6 +49,12 @@ class TestModelCase(TestCase):
         label.delete()
         with self.assertRaises(ObjectDoesNotExist):
             self.model.objects.get(pk=label.id)
+
+    def test_name_field_protection(self):
+        """Test 'name' field protection."""
+        label_in_db = self.model.objects.get(name='politic')
+        with self.assertRaises(ProtectedError):
+            label_in_db.delete()
 
 
 class TestListViewCase(TestCase):
