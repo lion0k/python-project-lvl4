@@ -11,7 +11,8 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.views.generic.list import ListView
+from django_filters.views import FilterView
+from task_manager.tasks.filters import TasksFilter
 from task_manager.tasks.forms import TasksForm
 from task_manager.tasks.mixins import (
     CheckUserRightsTestMixin,
@@ -20,15 +21,21 @@ from task_manager.tasks.mixins import (
 from task_manager.tasks.models import Tasks
 
 
-class TaskListView(CustomLoginRequiredMixin, ListView):
+class TaskListView(CustomLoginRequiredMixin, FilterView):
     """Task listing."""
 
     model = Tasks
     paginate_by = 10
-    queryset = model.objects.prefetch_related('status', 'executor', 'creator')
+    queryset = model.objects.prefetch_related(
+        'status',
+        'executor',
+        'creator',
+        'labels',
+    )
     login_url = reverse_lazy('login')
     context_object_name = 'tasks_list'
     template_name = 'tasks/index.html'
+    filterset_class = TasksFilter
 
 
 class TaskDetailView(CustomLoginRequiredMixin, DetailView):

@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
+    'django_filters',
+
     'task_manager',
     'task_manager.users.apps.UsersConfig',
     'task_manager.statuses.apps.StatusesConfig',
@@ -119,7 +121,7 @@ LOGOUT_REDIRECT_URL = reverse_lazy('home')
 
 FIXTURES_DIR = 'fixtures'
 
-LOGGING = DEFAULT_LOGGING
+LOGGING = DEFAULT_LOGGING.copy()
 LOGGING.update(
     {
         'handlers': {
