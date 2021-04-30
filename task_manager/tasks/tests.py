@@ -1,9 +1,9 @@
 """Users tests."""
+from django import test
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.deletion import ProtectedError
 from django.http.response import HttpResponseBase
-from django.test import TestCase
 from django.urls import reverse
 from task_manager.statuses.models import Status
 from task_manager.tasks.forms import TasksForm
@@ -11,7 +11,7 @@ from task_manager.tasks.models import Tasks
 from task_manager.utils import load_file_from_fixture
 
 
-class TestModelCase(TestCase):
+class TestModelCase(test.TestCase):
     """Test model case."""
 
     fixtures = [
@@ -85,7 +85,10 @@ class TestModelCase(TestCase):
             Tasks.objects.get(pk=task.pk)
 
 
-class TestListViewCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestListViewCase(test.TestCase):
     """Test listing view."""
 
     @classmethod
@@ -152,7 +155,10 @@ class TestListViewCase(TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestFilterViewCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestFilterViewCase(test.TestCase):
     """Test filter view."""
 
     fixtures = [
@@ -225,7 +231,10 @@ class TestFilterViewCase(TestCase):
         self.assertEqual(count_rec_switch_off, len(response.context['tasks_list']))
 
 
-class TestCreateViewCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestCreateViewCase(test.TestCase):
     """Test create view."""
 
     @classmethod
@@ -291,7 +300,10 @@ class TestCreateViewCase(TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestUpdateDeleteCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestUpdateDeleteCase(test.TestCase):
     """Test update and delete view."""
 
     fixtures = [
@@ -412,7 +424,7 @@ class TestUpdateDeleteCase(TestCase):
         )
 
 
-class TestStatusCreationForm(TestCase):
+class TestStatusCreationForm(test.TestCase):
     """Test form validations."""
 
     fixtures = ['tasks/db_users.json', 'tasks/db_statuses.json']

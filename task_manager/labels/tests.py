@@ -1,15 +1,15 @@
 """Labels tests."""
+from django import test
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.deletion import ProtectedError
 from django.http.response import HttpResponseBase
-from django.test import TestCase
 from django.urls import reverse
 from task_manager.labels.forms import LabelForm
 from task_manager.labels.models import Label
 
 
-class TestModelCase(TestCase):
+class TestModelCase(test.TestCase):
     """Test model case."""
 
     fixtures = [
@@ -57,7 +57,10 @@ class TestModelCase(TestCase):
             label_in_db.delete()
 
 
-class TestListViewCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestListViewCase(test.TestCase):
     """Test listing view."""
 
     @classmethod
@@ -121,7 +124,10 @@ class TestListViewCase(TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestCreateViewCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestCreateViewCase(test.TestCase):
     """Test create view."""
 
     @classmethod
@@ -182,7 +188,10 @@ class TestCreateViewCase(TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestUpdateDeleteCase(TestCase):
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestUpdateDeleteCase(test.TestCase):
     """Test update and delete view."""
 
     @classmethod
@@ -267,7 +276,7 @@ class TestUpdateDeleteCase(TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestStatusCreationForm(TestCase):
+class TestStatusCreationForm(test.TestCase):
     """Test form validations."""
 
     def test_valid_form(self):
