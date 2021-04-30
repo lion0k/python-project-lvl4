@@ -1,14 +1,14 @@
 """Statuses tests."""
-from django import test
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseBase
 from django.urls import reverse
+from task_manager.mixins import TestCaseWithoutRollbar
 from task_manager.statuses.forms import StatusForm
 from task_manager.statuses.models import Status
 
 
-class TestModelCase(test.TestCase):
+class TestModelCase(TestCaseWithoutRollbar):
     """Test model case."""
 
     @classmethod
@@ -43,10 +43,7 @@ class TestModelCase(test.TestCase):
             self.model.objects.get(pk=status.id)
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestListViewCase(test.TestCase):
+class TestListViewCase(TestCaseWithoutRollbar):
     """Test listing view."""
 
     @classmethod
@@ -110,10 +107,7 @@ class TestListViewCase(test.TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestCreateViewCase(test.TestCase):
+class TestCreateViewCase(TestCaseWithoutRollbar):
     """Test create view."""
 
     @classmethod
@@ -174,10 +168,7 @@ class TestCreateViewCase(test.TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestUpdateDeleteCase(test.TestCase):
+class TestUpdateDeleteCase(TestCaseWithoutRollbar):
     """Test update and delete view."""
 
     @classmethod
@@ -262,7 +253,7 @@ class TestUpdateDeleteCase(test.TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestStatusCreationForm(test.TestCase):
+class TestStatusCreationForm(TestCaseWithoutRollbar):
     """Test form validations."""
 
     def test_valid_form(self):

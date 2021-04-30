@@ -1,17 +1,17 @@
 """Users tests."""
-from django import test
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.deletion import ProtectedError
 from django.http.response import HttpResponseBase
 from django.urls import reverse
+from task_manager.mixins import TestCaseWithoutRollbar
 from task_manager.statuses.models import Status
 from task_manager.tasks.forms import TasksForm
 from task_manager.tasks.models import Tasks
 from task_manager.utils import load_file_from_fixture
 
 
-class TestModelCase(test.TestCase):
+class TestModelCase(TestCaseWithoutRollbar):
     """Test model case."""
 
     fixtures = [
@@ -85,10 +85,7 @@ class TestModelCase(test.TestCase):
             Tasks.objects.get(pk=task.pk)
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestListViewCase(test.TestCase):
+class TestListViewCase(TestCaseWithoutRollbar):
     """Test listing view."""
 
     @classmethod
@@ -155,10 +152,7 @@ class TestListViewCase(test.TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestFilterViewCase(test.TestCase):
+class TestFilterViewCase(TestCaseWithoutRollbar):
     """Test filter view."""
 
     fixtures = [
@@ -231,10 +225,7 @@ class TestFilterViewCase(test.TestCase):
         self.assertEqual(count_rec_switch_off, len(response.context['tasks_list']))
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestCreateViewCase(test.TestCase):
+class TestCreateViewCase(TestCaseWithoutRollbar):
     """Test create view."""
 
     @classmethod
@@ -300,10 +291,7 @@ class TestCreateViewCase(test.TestCase):
         self.assertRedirects(response, reverse('login'))
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestUpdateDeleteCase(test.TestCase):
+class TestUpdateDeleteCase(TestCaseWithoutRollbar):
     """Test update and delete view."""
 
     fixtures = [
@@ -424,7 +412,7 @@ class TestUpdateDeleteCase(test.TestCase):
         )
 
 
-class TestStatusCreationForm(test.TestCase):
+class TestStatusCreationForm(TestCaseWithoutRollbar):
     """Test form validations."""
 
     fixtures = ['tasks/db_users.json', 'tasks/db_statuses.json']

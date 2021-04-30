@@ -1,13 +1,10 @@
 """Project tests."""
-from django import test
 from django.http.response import HttpResponseBase
 from django.urls import reverse
+from task_manager.mixins import TestCaseWithoutRollbar
 
 
-@test.modify_settings(MIDDLEWARE={'remove': [
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
-]})
-class TestI18nCase(test.TestCase):
+class TestI18nCase(TestCaseWithoutRollbar):
     """Language tests."""
 
     def test_i18_ru(self):

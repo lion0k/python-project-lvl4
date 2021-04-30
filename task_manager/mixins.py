@@ -1,6 +1,7 @@
 """Mixins."""
 from typing import Any
 
+from django import test
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -27,3 +28,10 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
             messages.error(request, _('UserNotAuthentication'))
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
+
+
+@test.modify_settings(MIDDLEWARE={'remove': [
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+]})
+class TestCaseWithoutRollbar(test.TestCase):
+    """Switch off rollbar middleware."""
