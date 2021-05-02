@@ -56,12 +56,6 @@ class TaskCreateView(
 
     model = Tasks
     form_class = TasksForm
-    queryset = model.objects.prefetch_related(
-        'status',
-        'executor',
-        'creator',
-        'labels',
-    )
     login_url = reverse_lazy('login')
     template_name = 'tasks/create.html'
     success_message = _('SuccessCreateTask')
@@ -91,12 +85,6 @@ class TaskUpdateView(
     model = Tasks
     context_object_name = 'task'
     form_class = TasksForm
-    queryset = model.objects.prefetch_related(
-        'status',
-        'executor',
-        'creator',
-        'labels',
-    )
     login_url = reverse_lazy('login')
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks')
