@@ -129,7 +129,7 @@ msgstr "Только свои задачи"
 
 #: task_manager/tasks/mixins.py:69
 msgid "ErrorTaskCanOnlyBeDeletedByAuthor"
-msgstr "Удалить задачу может только её автор!"
+msgstr "Задачу может удалить только её автор"
 
 #: task_manager/tasks/models.py:17
 msgid "TasksName"
@@ -281,7 +281,7 @@ msgstr "Метки не найдены"
 #: task_manager/templates/labels/update.html:10
 #: task_manager/templates/labels/update.html:16
 msgid "UpdateLabels"
-msgstr "Обновление данных метки"
+msgstr "Изменение данных метки"
 
 #: task_manager/templates/labels/update.html:21
 msgid "UpdateLabel"
@@ -364,7 +364,7 @@ msgstr "Статусы не найдены"
 #: task_manager/templates/statuses/update.html:10
 #: task_manager/templates/statuses/update.html:16
 msgid "UpdateStatuses"
-msgstr "Обновление данных статуса"
+msgstr "Изменение данных статуса"
 
 #: task_manager/templates/statuses/update.html:21
 msgid "UpdateStatus"
@@ -437,7 +437,7 @@ msgstr "Задачи не найдены"
 #: task_manager/templates/tasks/update.html:10
 #: task_manager/templates/tasks/update.html:16
 msgid "UpdateTasks"
-msgstr "Обновление данных задачи"
+msgstr "Изменение данных задачи"
 
 #: task_manager/templates/tasks/update.html:21
 msgid "UpdateTask"
@@ -532,7 +532,7 @@ msgstr "Вход"
 #: task_manager/templates/users/update.html:10
 #: task_manager/templates/users/update.html:16
 msgid "UpdateUsers"
-msgstr "Обновление данных пользователя"
+msgstr "Изменение данных пользователя"
 
 #: task_manager/templates/users/update.html:21
 msgid "UpdateUser"
