@@ -285,7 +285,7 @@ msgstr "Обновление данных метки"
 
 #: task_manager/templates/labels/update.html:21
 msgid "UpdateLabel"
-msgstr "Обновить"
+msgstr "Изменить"
 
 #: task_manager/templates/layout.html:21
 #: task_manager/templates/users/create.html:9
@@ -368,7 +368,7 @@ msgstr "Обновление данных статуса"
 
 #: task_manager/templates/statuses/update.html:21
 msgid "UpdateStatus"
-msgstr "Обновить"
+msgstr "Изменить"
 
 #: task_manager/templates/tasks/create.html:4
 #: task_manager/templates/tasks/create.html:10
@@ -441,7 +441,7 @@ msgstr "Обновление данных задачи"
 
 #: task_manager/templates/tasks/update.html:21
 msgid "UpdateTask"
-msgstr "Обновить"
+msgstr "Изменить"
 
 #: task_manager/templates/users/create.html:4
 #: task_manager/templates/users/create.html:10
@@ -536,7 +536,7 @@ msgstr "Обновление данных пользователя"
 
 #: task_manager/templates/users/update.html:21
 msgid "UpdateUser"
-msgstr "Обновить"
+msgstr "Изменить"
 
 #: task_manager/users/mixins.py:56
 msgid "ErrorUserNotHaveRights"
