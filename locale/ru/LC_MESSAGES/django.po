@@ -67,7 +67,7 @@ msgstr "Метка успешно удалена"
 
 #: task_manager/labels/views.py:92
 msgid "CannotDeleteLabel"
-msgstr "Невозможно удалить метку, потому что она используется!"
+msgstr "Невозможно удалить метку, потому что она используется"
 
 #: task_manager/mixins.py:28 task_manager/tasks/mixins.py:30
 #: task_manager/tasks/mixins.py:66 task_manager/users/mixins.py:53
@@ -117,7 +117,7 @@ msgstr "Статус успешно удалён"
 
 #: task_manager/statuses/views.py:92
 msgid "CannotDeleteStatus"
-msgstr "Невозможно удалить статус, потому что он используется!"
+msgstr "Невозможно удалить статус, потому что он используется"
 
 #: task_manager/tasks/filters.py:16
 msgid "FilterLabels"
@@ -540,7 +540,7 @@ msgstr "Обновить"
 
 #: task_manager/users/mixins.py:56
 msgid "ErrorUserNotHaveRights"
-msgstr "У вас нет прав для изменения другого пользователя!"
+msgstr "У вас нет прав для изменения другого пользователя."
 
 #: task_manager/users/models.py:28
 msgid "User"
