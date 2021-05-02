@@ -301,12 +301,12 @@ msgstr "Пользователи"
 
 #: task_manager/templates/layout.html:41
 msgid "Logout"
-msgstr "Выйти"
+msgstr "Выход"
 
 #: task_manager/templates/layout.html:45
 #: task_manager/templates/users/login.html:19
 msgid "Login"
-msgstr "Вход"
+msgstr "Войти"
 
 #: task_manager/templates/layout.html:48
 msgid "Registration"
