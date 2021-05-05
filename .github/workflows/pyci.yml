@@ -26,11 +26,14 @@ jobs:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           make lint
-      - name: Run headless browser
-        uses: microsoft/playwright-github-action@v1
-        run:  make test_headless
       - uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
+
+      - uses: microsoft/playwright-github-action@v1
+      - name: Installed browser
+        run: python -m playwright install
+      - name: Test headless browser
+        run: make test_headless
