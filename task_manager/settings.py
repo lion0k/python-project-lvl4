@@ -69,6 +69,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'TEST': {
+            'NAME': os.path.join(BASE_DIR, 'db_test.sqlite3')
+        }
     }
 }
 CONN_MAX_AGE = 500
@@ -122,38 +125,38 @@ LOGOUT_REDIRECT_URL = reverse_lazy('home')
 
 FIXTURES_DIR = 'fixtures'
 
-# LOGGING = DEFAULT_LOGGING.copy()
-# LOGGING.update(
-#     {
-#         'handlers': {
-#             'console': {
-#                 'level': 'DEBUG',
-#                 'class': 'logging.StreamHandler',
-#             },
-#             'django.server': {
-#                 'level': 'INFO',
-#                 'class': 'logging.StreamHandler',
-#                 'formatter': 'django.server',
-#             },
-#             'mail_admins': {
-#                 'level': 'ERROR',
-#                 'filters': ['require_debug_false'],
-#                 'class': 'django.utils.log.AdminEmailHandler'
-#             },
-#         },
-#         'loggers': {
-#             'django': {
-#                 'handlers': ['console', 'mail_admins'],
-#                 'level': 'INFO',
-#             },
-#             'django.db.backends': {
-#                 'level': 'DEBUG',
-#                 'propagate': False,
-#                 'handlers': ['console'],
-#             },
-#         },
-#     }
-# )
+LOGGING = DEFAULT_LOGGING.copy()
+LOGGING.update(
+    {
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+            'django.server': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'django.server',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console', 'mail_admins'],
+                'level': 'INFO',
+            },
+            'django.db.backends': {
+                'level': 'DEBUG',
+                'propagate': False,
+                'handlers': ['console'],
+            },
+        },
+    }
+)
 
 ROLLBAR = {
     'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN', 'some_key'),

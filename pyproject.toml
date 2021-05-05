@@ -23,6 +23,7 @@ whitenoise = "^5.2.0"
 django-bootstrap4 = "^3.0.0"
 django-filter = "^2.4.0"
 rollbar = "^0.15.2"
+playwright = "^1.10.0"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.5"

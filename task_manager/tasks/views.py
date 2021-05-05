@@ -26,6 +26,12 @@ class TaskListView(CustomLoginRequiredMixin, FilterView):
 
     model = Tasks
     paginate_by = 10
+    queryset = model.objects.select_related(
+        'status',
+        'executor',
+        'creator',
+    )
+    queryset = queryset.prefetch_related('labels')
     login_url = reverse_lazy('login')
     context_object_name = 'tasks_list'
     template_name = 'tasks/index.html'
@@ -50,6 +56,12 @@ class TaskCreateView(
 
     model = Tasks
     form_class = TasksForm
+    queryset = model.objects.select_related(
+        'status',
+        'executor',
+        'creator',
+    )
+    queryset = queryset.prefetch_related('labels')
     login_url = reverse_lazy('login')
     template_name = 'tasks/create.html'
     success_message = _('SuccessCreateTask')
@@ -79,6 +91,12 @@ class TaskUpdateView(
     model = Tasks
     context_object_name = 'task'
     form_class = TasksForm
+    queryset = model.objects.select_related(
+        'status',
+        'executor',
+        'creator',
+    )
+    queryset = queryset.prefetch_related('labels')
     login_url = reverse_lazy('login')
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks')
