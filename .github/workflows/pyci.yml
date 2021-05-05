@@ -26,8 +26,10 @@ jobs:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           make lint
+      - name: Run headless browser
+        uses: microsoft/playwright-github-action@v1
+        run:  make test_headless
       - uses: paambaati/codeclimate-action@v2.7.5
-      - uses: microsoft/playwright-github-action@v1
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
