@@ -2,9 +2,10 @@
 from typing import Any
 
 from django import test
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,7 +13,6 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
     """Verify that the current user is authenticated."""
 
     redirect_field_name = ''
-    login_url = reverse_lazy('login')
 
     def dispatch(self, request, *args, **kwargs) -> Any:
         """
@@ -26,7 +26,7 @@ class CustomLoginRequiredMixin(LoginRequiredMixin):
         """
         if not request.user.is_authenticated:
             messages.error(request, _('UserNotAuthentication'))
-            return self.handle_no_permission()
+            return redirect(settings.LOGIN_URL)
         return super().dispatch(request, *args, **kwargs)
 
 

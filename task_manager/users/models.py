@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
     )
 
     def get_absolute_url(self):  # noqa: D102
-        return reverse_lazy('update_user', kwargs={'pk': self.pk})
+        return reverse_lazy('users')
 
     def __str__(self) -> str:
         """
