@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
+from task_manager.mixins import CustomLoginRequiredMixin
 from task_manager.tasks.models import Tasks
 from task_manager.users.forms import CustomUserCreationForm
 from task_manager.users.mixins import CheckUserRightsTestMixin
@@ -30,12 +31,11 @@ class UserListView(ListView):
     template_name = 'users/index.html'
 
 
-class UserDetailView(CheckUserRightsTestMixin, DetailView):
+class UserDetailView(CustomLoginRequiredMixin, DetailView):
     """User detail view."""
 
     model = get_user_model()
     context_object_name = 'user'
-    login_url = reverse_lazy('login')
     template_name = 'users/detail.html'
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
@@ -66,6 +66,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 
 class UserUpdateView(
+    CustomLoginRequiredMixin,
     CheckUserRightsTestMixin,
     SuccessMessageMixin,
     UpdateView,
@@ -76,12 +77,12 @@ class UserUpdateView(
     context_object_name = 'user'
     form_class = CustomUserCreationForm
     template_name = 'users/update.html'
-    success_url = reverse_lazy('users')
     success_message = _('SuccessUpdateUser')
     redirect_url = reverse_lazy('users')
 
 
 class UserDeleteView(
+    CustomLoginRequiredMixin,
     CheckUserRightsTestMixin,
     SuccessMessageMixin,
     DeleteView,

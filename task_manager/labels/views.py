@@ -23,7 +23,6 @@ class LabelListView(CustomLoginRequiredMixin, ListView):
 
     model = Label
     paginate_by = 10
-    login_url = reverse_lazy('login')
     context_object_name = 'labels_list'
     template_name = 'labels/index.html'
 
@@ -37,10 +36,8 @@ class LabelCreateView(
 
     model = Label
     form_class = LabelForm
-    login_url = reverse_lazy('login')
     template_name = 'labels/create.html'
     success_message = _('SuccessCreateLabel')
-    success_url = reverse_lazy('labels')
 
 
 class LabelUpdateView(
@@ -54,7 +51,6 @@ class LabelUpdateView(
     context_object_name = 'label'
     form_class = LabelForm
     template_name = 'labels/update.html'
-    success_url = reverse_lazy('labels')
     success_message = _('SuccessUpdateLabel')
 
 

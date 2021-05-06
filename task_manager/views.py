@@ -1,16 +1,8 @@
 """Task manager views."""
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.views.generic.base import TemplateView
 
 
-def index(request) -> HttpResponse:
-    """
-    Test.
+class HomePageView(TemplateView):
+    """Home page view."""
 
-    Args:
-        request: request
-
-    Returns:
-        HttpResponse:
-    """
-    return render(request, 'index.html')
+    template_name = 'index.html'

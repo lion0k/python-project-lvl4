@@ -1,5 +1,6 @@
 """Status model."""
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 
@@ -27,6 +28,9 @@ class Status(models.Model):
             str:
         """
         return self.name
+
+    def get_absolute_url(self):  # noqa: D102
+        return reverse_lazy('statuses')
 
     class Meta(object):
         """Meta information."""

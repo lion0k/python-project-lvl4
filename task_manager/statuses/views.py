@@ -23,7 +23,6 @@ class StatusListView(CustomLoginRequiredMixin, ListView):
 
     model = Status
     paginate_by = 10
-    login_url = reverse_lazy('login')
     context_object_name = 'statuses_list'
     template_name = 'statuses/index.html'
 
@@ -37,10 +36,8 @@ class StatusCreateView(
 
     model = Status
     form_class = StatusForm
-    login_url = reverse_lazy('login')
     template_name = 'statuses/create.html'
     success_message = _('SuccessCreateStatus')
-    success_url = reverse_lazy('statuses')
 
 
 class StatusUpdateView(
@@ -54,7 +51,6 @@ class StatusUpdateView(
     context_object_name = 'status'
     form_class = StatusForm
     template_name = 'statuses/update.html'
-    success_url = reverse_lazy('statuses')
     success_message = _('SuccessUpdateStatus')
 
 
