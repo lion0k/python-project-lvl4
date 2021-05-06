@@ -126,38 +126,38 @@ LOGOUT_REDIRECT_URL = reverse_lazy('home')
 
 FIXTURES_DIR = 'fixtures'
 
-# LOGGING = DEFAULT_LOGGING.copy()
-# LOGGING.update(
-#     {
-#         'handlers': {
-#             'console': {
-#                 'level': 'DEBUG',
-#                 'class': 'logging.StreamHandler',
-#             },
-#             'django.server': {
-#                 'level': 'INFO',
-#                 'class': 'logging.StreamHandler',
-#                 'formatter': 'django.server',
-#             },
-#             'mail_admins': {
-#                 'level': 'ERROR',
-#                 'filters': ['require_debug_false'],
-#                 'class': 'django.utils.log.AdminEmailHandler'
-#             },
-#         },
-#         'loggers': {
-#             'django': {
-#                 'handlers': ['console', 'mail_admins'],
-#                 'level': 'INFO',
-#             },
-#             'django.db.backends': {
-#                 'level': 'DEBUG',
-#                 'propagate': False,
-#                 'handlers': ['console'],
-#             },
-#         },
-#     }
-# )
+LOGGING = DEFAULT_LOGGING.copy()
+LOGGING.update(
+    {
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+            'django.server': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+                'formatter': 'django.server',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console', 'mail_admins'],
+                'level': 'INFO',
+            },
+            'django.db.backends': {
+                'level': 'DEBUG',
+                'propagate': False,
+                'handlers': ['console'],
+            },
+        },
+    }
+)
 
 ROLLBAR = {
     'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN', 'some_key'),
