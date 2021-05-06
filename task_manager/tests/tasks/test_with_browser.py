@@ -107,10 +107,10 @@ class TestBrowserHeadless(StaticLiveServerTestCase):
         assert self.page.query_selector(row3) is not None
         assert self.page.query_selector('text="Создать задачу"') is not None
 
-        assert self.page.get_attribute('#id_status', 'value') is None
-        assert self.page.get_attribute('#id_executor', 'value') is None
-        assert self.page.get_attribute('#id_label', 'value') is None
-        assert self.page.get_attribute('#id_self_tasks', 'value') is None
+        assert not self.page.select_option('#id_status')
+        assert not self.page.select_option('#id_executor')
+        assert not self.page.select_option('#id_label')
+        assert not self.page.query_selector('text="Только свои задачи"').is_checked()
         assert self.page.query_selector('text="Показать"') is not None
 
     def test_create_task(self):
