@@ -4,7 +4,7 @@ from task_manager.tasks.models import Tasks
 
 
 class TasksForm(forms.ModelForm):
-    """Status form."""
+    """Task form."""
 
     class Meta(object):
         """Meta information."""
