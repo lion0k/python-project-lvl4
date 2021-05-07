@@ -1,6 +1,7 @@
 {
     "first": {
         "user": {
+            "id": "1",
             "username": "user_test1",
             "first_name": "user",
             "last_name": "user1",
@@ -8,9 +9,11 @@
             "full_name": "user user1"
         },
         "status": {
+            "id": "1",
             "name": "new"
         },
         "labels": {
+            "id": ["2", "1"],
             "name": "politic"
         },
         "task": {

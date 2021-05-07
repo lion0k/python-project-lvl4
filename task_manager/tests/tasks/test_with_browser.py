@@ -192,6 +192,15 @@ class TestBrowserHeadless(StaticLiveServerTestCase):
                self.data['first']['task']['name']
         assert self.page.text_content('#id_description') == \
                self.data['first']['task']['description']
+        assert self.page.eval_on_selector('#id_status', 'el => el.value') == \
+               self.data['first']['status']['id']
+        assert self.page.eval_on_selector('#id_executor', 'el => el.value') == \
+               self.data['first']['user']['id']
+        labels = self.page.eval_on_selector(
+            '#id_labels',
+            'ops => Array.from(ops.selectedOptions).map(el => el.value)',
+        )
+        assert set(labels) == set(self.data['first']['labels']['id'])
 
         data_upd = self.data['five']['task']
         self.page.fill('input[name="name"]', data_upd['name'])
