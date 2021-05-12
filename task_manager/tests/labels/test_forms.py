@@ -1,9 +1,9 @@
 """Labels forms tests."""
+from django.test import TestCase
 from task_manager.labels.forms import LabelForm
-from task_manager.mixins import TestCaseWithoutRollbar
 
 
-class TestStatusCreationForm(TestCaseWithoutRollbar):
+class TestStatusCreationForm(TestCase):
     """Test form validations."""
 
     def test_valid_form(self):

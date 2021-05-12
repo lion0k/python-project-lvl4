@@ -1,11 +1,11 @@
 """Statuses model tests."""
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.deletion import ProtectedError
-from task_manager.mixins import TestCaseWithoutRollbar
+from django.test import TestCase
 from task_manager.statuses.models import Status
 
 
-class TestModelCase(TestCaseWithoutRollbar):
+class TestModelCase(TestCase):
     """Test model case."""
 
     fixtures = [

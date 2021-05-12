@@ -1,72 +1,55 @@
 """Tasks views tests."""
+from http import HTTPStatus
+
 from django.contrib.auth import get_user_model
-from django.http.response import HttpResponseBase
+from django.test import TestCase
 from django.urls import reverse
-from task_manager.mixins import TestCaseWithoutRollbar
 from task_manager.statuses.models import Status
 from task_manager.tasks.models import Tasks
+from task_manager.tasks.views import TaskListView
 from task_manager.utils import load_file_from_fixture
 
 
-class TestListViewCase(TestCaseWithoutRollbar):
+class TestListViewCase(TestCase):
     """Test listing view."""
 
     @classmethod
     def setUpTestData(cls):
         """Setup once test data."""
         number_of_tasks = 15
+        cls.list_view_class = TaskListView
         cls.user_model = get_user_model()
+        cls.model = Tasks
         cls.credentials = {'username': 'test', 'password': 'test'}
         cls.user = cls.user_model.objects.create_user(**cls.credentials)
         cls.status = Status.objects.create(name='test_status')
-        Tasks.objects.bulk_create(
+        cls.model.objects.bulk_create(
             [
-                Tasks(
+                cls.model(
                     name=f'task{postfix}',  # noqa: WPS305
                     status=cls.status,
                     creator=cls.user,
                     executor=cls.user,
                 ) for postfix in range(number_of_tasks)
-            ], batch_size=number_of_tasks,
+            ],
         )
 
     def setUp(self):
         """Setup always when test executed."""
         self.client.login(**self.credentials)
 
-    def test_view_url_exists_at_desired_location(self):
-        """Test view url exists at desired location."""
-        response = self.client.get('/tasks/')
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+    def test_view_url(self):
+        """Test view url."""
+        self.assertEqual(reverse('tasks'), '/tasks/')
 
-    def test_view_url_accessible_by_name(self):
-        """Test view url accessible by name."""
         response = self.client.get(reverse('tasks'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_view_uses_correct_template(self):
         """Test view uses correct template."""
         response = self.client.get(reverse('tasks'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'tasks/index.html')
-
-    def test_pagination_is_ten(self):
-        """Test pagination is ten."""
-        response = self.client.get(reverse('tasks'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'])
-        self.assertTrue(len(response.context['tasks_list']) == 10)
-
-    def test_lists_all_tasks(self):
-        """Test lists all tasks."""
-        response = self.client.get(
-            '{url}?page=2'.format(url=reverse('tasks')),
-        )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'])
-        self.assertTrue(len(response.context['tasks_list']) == 5)
 
     def test_not_auth_users_cannot_view(self):
         """Test not authenticated users not allowed view."""
@@ -74,8 +57,44 @@ class TestListViewCase(TestCaseWithoutRollbar):
         response = self.client.get(reverse('tasks'))
         self.assertRedirects(response, reverse('login'))
 
+    def test_pagination_first_page(self):
+        """Test pagination."""
+        response = self.client.get(reverse('tasks'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue('is_paginated' in response.context)
+        self.assertTrue(response.context['is_paginated'])
+        self.assertTrue(
+            len(response.context['tasks_list']) == self.list_view_class.paginate_by,  # noqa: E501
+        )
 
-class TestFilterViewCase(TestCaseWithoutRollbar):
+    def test_pagination_last_page(self):
+        """Test pagination."""
+        count_recs = self.model.objects.count()
+        count_rec_last_page = count_recs % self.list_view_class.paginate_by
+        if count_rec_last_page:
+            last_page = (count_recs // self.list_view_class.paginate_by) + 1
+        else:
+            last_page = count_recs // self.list_view_class.paginate_by
+            count_rec_last_page = self.list_view_class.paginate_by
+
+        response = self.client.get(
+            '{url}?page={page}'.format(url=reverse('tasks'), page=last_page),
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue('is_paginated' in response.context)
+        self.assertTrue(response.context['is_paginated'])
+        self.assertTrue(len(response.context['tasks_list']) == count_rec_last_page)
+
+    def test_pagination_no_records(self):
+        """Test pagination if records not exists."""
+        self.model.objects.all().delete()
+        response = self.client.get(reverse('tasks'))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue('is_paginated' in response.context)
+        self.assertFalse(response.context['is_paginated'])
+
+
+class TestFilterViewCase(TestCase):
     """Test filter view."""
 
     fixtures = [
@@ -92,6 +111,10 @@ class TestFilterViewCase(TestCaseWithoutRollbar):
         cls.user_model = get_user_model()
         cls.credentials = {'username': 'user_test1', 'password': '12345'}
         cls.url = reverse('tasks')
+        cls.data = load_file_from_fixture(
+            filename='test_tasks.json',
+            add_paths=['tasks'],
+        )['filter']
 
     def setUp(self):
         """Setup always when test executed."""
@@ -122,7 +145,11 @@ class TestFilterViewCase(TestCaseWithoutRollbar):
             'executor': 'executor',
             'label': 'labels',
         }
-        query_data = [('status', 3), ('executor', 1), ('label', 6)]
+        query_data = [
+            ('status', self.data['status']),
+            ('executor', self.data['executor']),
+            ('label', self.data['label']),
+        ]
         for data in query_data:
             field, field_data = data
             count_rec_in_db = self.model.objects.filter(
@@ -131,24 +158,24 @@ class TestFilterViewCase(TestCaseWithoutRollbar):
             response = self.client.get(
                 self.get_absolute_filter_url(**{field: field_data}),
             )
-            self.assertEqual(response.status_code, HttpResponseBase.status_code)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertEqual(count_rec_in_db, len(response.context['tasks_list']))
 
     def test_filter_switch_on_off_task_only_author(self):
         """Test switch on/off task only author."""
-        data = {'creator': 1}
+        data = {'creator': self.data['creator']}
         count_rec_switch_on = self.model.objects.filter(**data).count()
         response = self.client.get(self.get_absolute_filter_url(**data))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(count_rec_switch_on, len(response.context['tasks_list']))
 
         count_rec_switch_off = self.model.objects.all().count()
         response = self.client.get(self.get_absolute_filter_url())
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(count_rec_switch_off, len(response.context['tasks_list']))
 
 
-class TestCreateViewCase(TestCaseWithoutRollbar):
+class TestCreateViewCase(TestCase):
     """Test create view."""
 
     @classmethod
@@ -172,7 +199,7 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
     def test_create_view(self):
         """Test check view create model."""
         response = self.client.get(reverse('create_task'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'tasks/create.html')
 
         response = self.client.post(
@@ -198,7 +225,7 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
             path=reverse('create_task'),
             data=self.data,
         )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(count_tasks, Tasks.objects.all().count())
 
     def test_get_not_auth_users_cannot_create(self):
@@ -214,8 +241,8 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestUpdateDeleteCase(TestCaseWithoutRollbar):
-    """Test update and delete view."""
+class TestUpdateCase(TestCase):
+    """Test update view."""
 
     fixtures = [
         'tasks/db_users.json',
@@ -245,9 +272,9 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
         """Test check view update model."""
         data = {
             'name': 'another_name',
-            'executor': 1,
-            'creator': 1,
-            'status': 2,
+            'executor': self.data['task_author_id_1']['executor'],
+            'creator': self.data['task_author_id_1']['creator'],
+            'status': self.data['task_author_id_1']['status'],
         }
         response = self.client.post(
             path=reverse('update_task', args=[self.task.pk]),
@@ -265,7 +292,7 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
             path=reverse('update_task', args=[self.task.pk]),
             data=self.data['task_author_id_2'],
         )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertNotEqual(
             self.data['task_author_id_2']['name'],
             Tasks.objects.get(pk=self.task.pk).name,
@@ -287,6 +314,34 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
         )
         self.assertRedirects(response, reverse('login'))
 
+
+class TestDeleteCase(TestCase):
+    """Test delete view."""
+
+    fixtures = [
+        'tasks/db_users.json',
+        'tasks/db_statuses.json',
+        'tasks/db_labels.json',
+        'tasks/db_tasks.json',
+    ]
+
+    @classmethod
+    def setUpTestData(cls):
+        """Setup once test data."""
+        cls.user_model = get_user_model()
+        cls.credentials = {'username': 'user_test1', 'password': '12345'}
+        cls.data = load_file_from_fixture(
+            filename='test_tasks.json',
+            add_paths=['tasks'],
+        )
+
+    def setUp(self) -> None:
+        """Setup always when test executed."""
+        self.client.login(**self.credentials)
+        self.task = Tasks.objects.get(
+            name=self.data['task_author_id_1']['name'],
+        )
+
     def test_delete_view(self):
         """Test check view delete model."""
         response = self.client.post(
@@ -296,7 +351,7 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
         self.assertFalse(
             Tasks.objects.filter(
                 name=self.data['task_author_id_1']['name'],
-            ).exists(),
+            ).exists()  # noqa: C812
         )
 
     def test_get_not_auth_users_cannot_delete(self):
@@ -331,5 +386,5 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
         self.assertTrue(
             Tasks.objects.filter(
                 name=self.data['task_author_id_2']['name'],
-            ).exists(),
+            ).exists()  # noqa: C812
         )

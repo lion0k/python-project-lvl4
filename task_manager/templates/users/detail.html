@@ -36,11 +36,11 @@
                 </div>
                 <div class="row pl-1">
                     <a class="col" href="{% filter_url_by_user %}">{% translate 'CountTaskByUser' %}:</a>
-                    <div class="col">{{ count_tasks_by_user }}</div>
+                    <div class="col">{{ user.creators.count }}</div>
                 </div>
                 <div class="row pl-1">
                     <a class="col" href="{% filter_url_to_user user.id %}">{% translate 'CountTaskToUser' %}:</a>
-                    <div class="col">{{ count_tasks_to_user }}</div>
+                    <div class="col">{{ user.executors.count }}</div>
                 </div>
             </div>
             <div class="card-footer">

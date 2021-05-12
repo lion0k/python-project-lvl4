@@ -2,13 +2,13 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.deletion import ProtectedError
-from task_manager.mixins import TestCaseWithoutRollbar
+from django.test import TestCase
 from task_manager.statuses.models import Status
 from task_manager.tasks.models import Tasks
 from task_manager.utils import load_file_from_fixture
 
 
-class TestModelCase(TestCaseWithoutRollbar):
+class TestModelCase(TestCase):
     """Test model case."""
 
     fixtures = [

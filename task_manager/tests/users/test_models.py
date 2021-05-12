@@ -1,10 +1,10 @@
 """User model tests."""
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from task_manager.mixins import TestCaseWithoutRollbar
+from django.test import TestCase
 
 
-class TestModelCase(TestCaseWithoutRollbar):
+class TestModelCase(TestCase):
     """Test model case."""
 
     @classmethod

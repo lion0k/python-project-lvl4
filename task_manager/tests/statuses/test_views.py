@@ -1,12 +1,14 @@
 """Statuses views tests."""
+from http import HTTPStatus
+
 from django.contrib.auth import get_user_model
-from django.http.response import HttpResponseBase
+from django.test import TestCase
 from django.urls import reverse
-from task_manager.mixins import TestCaseWithoutRollbar
 from task_manager.statuses.models import Status
+from task_manager.statuses.views import StatusListView
 
 
-class TestListViewCase(TestCaseWithoutRollbar):
+class TestListViewCase(TestCase):
     """Test listing view."""
 
     @classmethod
@@ -14,12 +16,13 @@ class TestListViewCase(TestCaseWithoutRollbar):
         """Setup once test data."""
         number_of_status = 15
         cls.model = Status
+        cls.list_view_class = StatusListView
         cls.model.objects.bulk_create(
             [
                 cls.model(
                     name=f'task{postfix}',  # noqa: WPS305
                 ) for postfix in range(number_of_status)
-            ], batch_size=number_of_status,
+            ],
         )
         cls.user_model = get_user_model()
         cls.credentials = {'username': 'test', 'password': 'test'}
@@ -29,39 +32,48 @@ class TestListViewCase(TestCaseWithoutRollbar):
         """Setup always when test executed."""
         self.client.login(**self.credentials)
 
-    def test_view_url_exists_at_desired_location(self):
-        """Test view url exists at desired location."""
-        response = self.client.get('/statuses/')
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+    def test_view_url(self):
+        """Test view url."""
+        self.assertEqual(reverse('statuses'), '/statuses/')
 
-    def test_view_url_accessible_by_name(self):
-        """Test view url accessible by name."""
         response = self.client.get(reverse('statuses'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_view_uses_correct_template(self):
         """Test view uses correct template."""
         response = self.client.get(reverse('statuses'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'statuses/index.html')
 
-    def test_pagination_is_ten(self):
-        """Test pagination is ten."""
+    def test_pagination_first_page(self):
+        """Test pagination."""
         response = self.client.get(reverse('statuses'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue('is_paginated' in response.context)
         self.assertTrue(response.context['is_paginated'])
-        self.assertTrue(len(response.context['statuses_list']) == 10)
-
-    def test_lists_all_statuses(self):
-        """Test lists all statuses."""
-        response = self.client.get(
-            '{url}?page=2'.format(url=reverse('statuses')),
+        self.assertTrue(
+            len(response.context['statuses_list']) == self.list_view_class.paginate_by,  # noqa: E501
         )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+
+    def test_pagination_last_page(self):
+        """Test pagination."""
+        count_recs = self.model.objects.count()
+        count_rec_last_page = count_recs % self.list_view_class.paginate_by
+        if count_rec_last_page:
+            last_page = (count_recs // self.list_view_class.paginate_by) + 1
+        else:
+            last_page = count_recs // self.list_view_class.paginate_by
+            count_rec_last_page = self.list_view_class.paginate_by
+
+        response = self.client.get(
+            '{url}?page={page}'.format(url=reverse('statuses'), page=last_page),
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue('is_paginated' in response.context)
         self.assertTrue(response.context['is_paginated'])
-        self.assertTrue(len(response.context['statuses_list']) == 5)
+        self.assertTrue(
+            len(response.context['statuses_list']) == count_rec_last_page,
+        )
 
     def test_not_auth_users_cannot_view(self):
         """Test not authenticated users not allowed view."""
@@ -70,7 +82,7 @@ class TestListViewCase(TestCaseWithoutRollbar):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestCreateViewCase(TestCaseWithoutRollbar):
+class TestCreateViewCase(TestCase):
     """Test create view."""
 
     @classmethod
@@ -89,7 +101,7 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
     def test_create_view(self):
         """Test check view create model."""
         response = self.client.get(reverse('create_status'))
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'statuses/create.html')
 
         response = self.client.post(
@@ -115,7 +127,7 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
             path=reverse('create_status'),
             data=self.data,
         )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(count_tasks, Status.objects.all().count())
 
     def test_get_not_auth_users_cannot_create(self):
@@ -131,8 +143,8 @@ class TestCreateViewCase(TestCaseWithoutRollbar):
         self.assertRedirects(response, reverse('login'))
 
 
-class TestUpdateDeleteCase(TestCaseWithoutRollbar):
-    """Test update and delete view."""
+class TestUpdateCase(TestCase):
+    """Test update view."""
 
     @classmethod
     def setUpTestData(cls):
@@ -171,7 +183,7 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
             path=reverse('update_status', args=[another_status_created.pk]),
             data=self.data,
         )
-        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_get_not_auth_users_cannot_update(self):
         """Test GET not authenticated users cannot update."""
@@ -188,6 +200,24 @@ class TestUpdateDeleteCase(TestCaseWithoutRollbar):
             reverse('update_status', args=[self.status.pk]),
         )
         self.assertRedirects(response, reverse('login'))
+
+
+class TestDeleteCase(TestCase):
+    """Test delete view."""
+
+    @classmethod
+    def setUpTestData(cls):
+        """Setup once test data."""
+        cls.model = Status
+        cls.user_model = get_user_model()
+        cls.data = {'name': 'test'}
+        cls.credentials = {'username': 'test', 'password': 'test'}
+        cls.status = cls.model.objects.create(**cls.data)
+        cls.user_model.objects.create_user(**cls.credentials)
+
+    def setUp(self) -> None:
+        """Setup always when test executed."""
+        self.client.login(**self.credentials)
 
     def test_delete_view(self):
         """Test check view delete model."""

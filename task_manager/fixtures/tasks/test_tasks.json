@@ -12,5 +12,11 @@
         "creator": 2,
         "status": 3,
         "executor": 2
+    },
+    "filter": {
+        "status": 3,
+        "executor": 1,
+        "label": 6,
+        "creator": 1
     }
 }

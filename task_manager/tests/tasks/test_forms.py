@@ -1,9 +1,9 @@
 """Statuses forms tests."""
-from task_manager.mixins import TestCaseWithoutRollbar
+from django.test import TestCase
 from task_manager.statuses.forms import StatusForm
 
 
-class TestStatusCreationForm(TestCaseWithoutRollbar):
+class TestStatusCreationForm(TestCase):
     """Test form validations."""
 
     def test_valid_form(self):

@@ -1,15 +1,12 @@
 """User views."""
-from typing import Any, Dict, Union
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.deletion import ProtectedError
-from django.http.response import (
-    HttpResponsePermanentRedirect,
-    HttpResponseRedirect,
-)
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -17,9 +14,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from task_manager.mixins import CustomLoginRequiredMixin
-from task_manager.tasks.models import Tasks
 from task_manager.users.forms import CustomUserCreationForm
-from task_manager.users.mixins import CheckUserRightsTestMixin
+from task_manager.users.mixins import UserIsHimselfMixin
 
 
 class UserListView(ListView):
@@ -38,22 +34,6 @@ class UserDetailView(CustomLoginRequiredMixin, DetailView):
     context_object_name = 'user'
     template_name = 'users/detail.html'
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """
-        Insert the single object into the context dict.
-
-        Returns:
-            Dict:
-        """
-        context = super().get_context_data(**kwargs)
-        context['count_tasks_by_user'] = Tasks.objects.filter(
-            creator=self.request.user.id,
-        ).count()
-        context['count_tasks_to_user'] = Tasks.objects.filter(
-            executor=self.request.user.id,
-        ).count()
-        return context
-
 
 class UserCreateView(SuccessMessageMixin, CreateView):
     """User create."""
@@ -67,7 +47,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 class UserUpdateView(
     CustomLoginRequiredMixin,
-    CheckUserRightsTestMixin,
+    UserIsHimselfMixin,
     SuccessMessageMixin,
     UpdateView,
 ):
@@ -78,12 +58,13 @@ class UserUpdateView(
     form_class = CustomUserCreationForm
     template_name = 'users/update.html'
     success_message = _('SuccessUpdateUser')
+    error_message = _('ErrorUserNotHaveRights')
     redirect_url = reverse_lazy('users')
 
 
 class UserDeleteView(
     CustomLoginRequiredMixin,
-    CheckUserRightsTestMixin,
+    UserIsHimselfMixin,
     SuccessMessageMixin,
     DeleteView,
 ):
@@ -94,12 +75,10 @@ class UserDeleteView(
     template_name = 'users/delete.html'
     success_url = reverse_lazy('users')
     success_message = _('SuccessDeleteUser')
+    error_message = _('ErrorUserNotHaveRights')
     redirect_url = reverse_lazy('users')
 
-    def post(self, request, *args, **kwargs) -> Union[
-        HttpResponsePermanentRedirect,
-        HttpResponseRedirect,
-    ]:
+    def post(self, request, *args, **kwargs) -> HttpResponseRedirect:
         """
         Override 'post' in DeletionMixin.
 

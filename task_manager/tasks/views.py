@@ -15,7 +15,7 @@ from django_filters.views import FilterView
 from task_manager.mixins import CustomLoginRequiredMixin
 from task_manager.tasks.filters import TasksFilter
 from task_manager.tasks.forms import TasksForm
-from task_manager.tasks.mixins import CheckUserRightsTestMixin
+from task_manager.tasks.mixins import UserIsCreatorMixin
 from task_manager.tasks.models import Tasks
 
 
@@ -28,8 +28,7 @@ class TaskListView(CustomLoginRequiredMixin, FilterView):
         'status',
         'executor',
         'creator',
-    )
-    queryset = queryset.prefetch_related('labels')
+    ).prefetch_related('labels')
     context_object_name = 'tasks_list'
     template_name = 'tasks/index.html'
     filterset_class = TasksFilter
@@ -56,8 +55,7 @@ class TaskCreateView(
         'status',
         'executor',
         'creator',
-    )
-    queryset = queryset.prefetch_related('labels')
+    ).prefetch_related('labels')
     template_name = 'tasks/create.html'
     success_message = _('SuccessCreateTask')
 
@@ -89,15 +87,14 @@ class TaskUpdateView(
         'status',
         'executor',
         'creator',
-    )
-    queryset = queryset.prefetch_related('labels')
+    ).prefetch_related('labels')
     template_name = 'tasks/update.html'
     success_message = _('SuccessUpdateTask')
 
 
 class TaskDeleteView(  # noqa: WPS215
     CustomLoginRequiredMixin,
-    CheckUserRightsTestMixin,
+    UserIsCreatorMixin,
     SuccessMessageMixin,
     DeleteView,
 ):
@@ -108,6 +105,7 @@ class TaskDeleteView(  # noqa: WPS215
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks')
     success_message = _('SuccessDeleteTask')
+    error_message = _('ErrorTaskCanOnlyBeDeletedByAuthor')
     redirect_url = reverse_lazy('tasks')
 
     def post(self, request, *args, **kwargs) -> Union[

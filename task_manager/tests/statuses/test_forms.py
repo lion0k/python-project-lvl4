@@ -1,10 +1,10 @@
 """Statuses forms tests."""
-from task_manager.mixins import TestCaseWithoutRollbar
+from django.test import TestCase
 from task_manager.users.forms import CustomUserCreationForm
 from task_manager.utils import load_file_from_fixture
 
 
-class TestCustomUserCreationForm(TestCaseWithoutRollbar):
+class TestCustomUserCreationForm(TestCase):
     """Test form validations."""
 
     @classmethod

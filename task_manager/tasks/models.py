@@ -10,10 +10,9 @@ from task_manager.statuses.models import Status
 class Tasks(models.Model):
     """Tasks model."""
 
-    max_name_field_length = 150
-    user = get_user_model()
+    user_model = get_user_model()
     name = models.CharField(
-        max_length=max_name_field_length,
+        max_length=150,  # noqa: WPS432
         unique=True,
         verbose_name=_('TasksName'),
         help_text=_('HelpTaskFieldText'),
@@ -34,7 +33,7 @@ class Tasks(models.Model):
         verbose_name=_('Status'),
     )
     executor = models.ForeignKey(
-        user,
+        user_model,
         related_name='executors',
         on_delete=models.PROTECT,
         verbose_name=_('TaskExecutor'),
@@ -42,7 +41,7 @@ class Tasks(models.Model):
         null=True,
     )
     creator = models.ForeignKey(
-        user,
+        user_model,
         related_name='creators',
         on_delete=models.PROTECT,
         verbose_name=_('TaskCreator'),

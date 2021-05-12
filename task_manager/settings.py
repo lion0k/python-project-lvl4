@@ -164,4 +164,5 @@ ROLLBAR = {
     'environment': 'development' if DEBUG else 'production',
     'branch': 'master',
     'root': BASE_DIR,
+    'enabled': not DEBUG,
 }
